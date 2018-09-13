@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  sample:
+    image: 'me.yaman.can/sample:latest'
+
+  mysql:
+    image: 'mysql'
+    volumes:
+    - db-data:/var/lib/mysql/data
+
+volumes:
+  db-data:
