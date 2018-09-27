@@ -1,0 +1,65 @@
+server:
+  port: 8080
+  servlet.contextPath: /sample
+
+spring:
+  profiles.active: mssql
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: create-drop
+      show_sql: true
+      format_sql: true
+      generate_statistics: true
+
+security:
+  basic.enabled: false
+
+logging.level:
+  org.hibernate.type: trace
+  org.hibernate.stat: debug
+  org.springframework.security: debug
+  org.springframework.web: error
+
+database:
+  name: ${DATABASE_NAME}
+  user: ${DATABASE_USER}
+  password: ${DATABASE_PASSWORD}
+  host: ${DATABASE_HOST}
+  port: ${DATABASE_PORT}
+
+# Detailed Health Service
+# management:
+#  endpoints.health.sensitive: false
+#  endpoint.health.show-details: always
+
+---
+spring:
+  profiles: mssql
+  jpa.hibernate:
+    dialect: org.hibernate.dialect.SQLServer2012Dialect
+    ddlAuto: create-drop
+  datasource:
+    username: ${database.user}
+    password: ${database.password}
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://${database.host}:${database.port}
+#   url: jdbc:sqlserver://${database.host}:${database.port};database=${database.name}
+---
+spring:
+  profiles: h2
+  h2.console:
+    enabled: true
+    path: /console
+  jpa:
+    show_sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+      ddlAuto: create-drop
+      show_sql: true
+      format_sql: true
+      generate_statistics: true
+  datasource:
+    platform: h2
+    url: jdbc:h2:mem:sample;DB_CLOSE_ON_EXIT=FALSE
+---

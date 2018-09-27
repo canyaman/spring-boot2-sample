@@ -6,13 +6,14 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Passw0rd123
+      - spring_profiles_active=mssql
     ports:
       - 1433:1433
 
   spring-boot:
     image: me.yaman.can/sample:latest
     depends_on:
-      - mssql
+      - docker-mssql
     ports:
       - 8080:8080
     environment:
