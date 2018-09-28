@@ -3,11 +3,11 @@ server:
   servlet.contextPath: /sample
 
 spring:
-  profiles.active: mssql
+  profiles.active: h2
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
       show_sql: true
       format_sql: true
       generate_statistics: true
@@ -29,16 +29,23 @@ database:
   port: ${DATABASE_PORT}
 
 # Detailed Health Service
-# management:
-#  endpoints.health.sensitive: false
-#  endpoint.health.show-details: always
+management:
+  endpoints.health.sensitive: false
+  endpoint.health.show-details: always
 
 ---
 spring:
   profiles: mssql
-  jpa.hibernate:
-    dialect: org.hibernate.dialect.SQLServer2012Dialect
-    ddlAuto: create-drop
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.SQLServer2012Dialect
+      ddlAuto: create-drop
+    properties:
+      javax.persistence.schema-generation.scripts:
+        action: drop-and-create
+        create-target: db/mssql/create.sql
+        drop-target: db/mssql/drop.sql
+
   datasource:
     username: ${database.user}
     password: ${database.password}
@@ -59,6 +66,13 @@ spring:
       show_sql: true
       format_sql: true
       generate_statistics: true
+    properties:
+      javax.persistence.schema-generation:
+        create-source: metadata
+        scripts:
+          action: drop-and-create
+          create-target: db/h2/create.sql
+          drop-target: db/h2/drop.sql
   datasource:
     platform: h2
     url: jdbc:h2:mem:sample;DB_CLOSE_ON_EXIT=FALSE
